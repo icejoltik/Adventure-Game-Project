@@ -1,60 +1,66 @@
 # gamefunctions.py
+# Bryan Strozyk
+# 9/28/2025
+
+
+
 import random
-# Function to simulate purchasing an item
-def purchase_item(item_price, starting_money, quantity_to_purchase=1):
- max_quantity = int(starting_money // item_price)
- quantity_purchased = min(quantity_to_purchase, max_quantity)
- remaining_money = starting_money - (quantity_purchased * item_price)
- return quantity_purchased, remaining_money
-# Defines a function that creates a new random monster from the 3 below
+
+def purchase_item(itemPrice, startingMoney, quantityToPurchase=1):
+    max_affordable = startingMoney // itemPrice
+    quantity_purchased = min(quantityToPurchase, max_affordable)
+    money_remaining = startingMoney - (itemPrice * quantity_purchased)
+    return quantity_purchased, money_remaining
+
 def new_random_monster():
- monsters = {
- "Goblin": {
- "description": "This is a lone goblin. When it notices you deep in the
-cavern, it rushes at you quickly with a shining dagger.",
- "health_range": (10, 30),
- "power_range": (5, 10),
- "money_range": (10, 50)
- },
- "Troll": {
- "description": "A menacing troll stands in your way, growling.",
- "health_range": (30, 60),
- "power_range": (10, 20),
- "money_range": (20, 100)
- },
- "Dragon": {
- "description": "A mighty dragon with scales that glisten in the
-sunlight.",
- "health_range": (50, 100),
- "power_range": (20, 40),
- "money_range": (100, 500)
- }
- }
- #picks a key from the dictionaries
- monster_name = random.choice(list(monsters.keys()))
- monster_info = monsters[monster_name]
+    monster_types = [
+        {
+            "name": "Goblin",
+            "description": "This is a lone goblin. When it notices you, it rushes at you quickly with a sharp dagger drawn.",
+            "health_range": (10, 30),
+            "power_range": (5, 15),
+            "money_range": (50, 150)
+        },
+        {
+            "name": "Vulture",
+            "description": "You discover a vulture eating the remains of two orcs that appear to have killed each other.\nThey were carrying a chest that contains a small treasure horde. You will need to scare off the vulture before you can take the treasure.",
+            "health_range": (1, 5),
+            "power_range": (1, 3),
+            "money_range": (1000, 1500)
+        },
+        {
+            "name": "Stone Golem",
+            "description": "A massive stone golem blocks your path. Its eyes glow faintly as it begins to move toward you.",
+            "health_range": (100, 200),
+            "power_range": (20, 40),
+            "money_range": (0, 50)
+        }
+    ]
 
- monster = {
- "name": monster_name,
- "description": monster_info["description"],
- "health": round(random.uniform(*monster_info["health_range"]), 2),
- "power": round(random.uniform(*monster_info["power_range"]), 2),
- "money": round(random.uniform(*monster_info["money_range"]), 2)
- }
+    monster = random.choice(monster_types)
+    return {
+        "name": monster["name"],
+        "description": monster["description"],
+        "health": random.randint(*monster["health_range"]),
+        "power": random.randint(*monster["power_range"]),
+        "money": random.randint(*monster["money_range"])
+    }
 
- return monster
-# show functions with three different inputs
-if __name__ == "__main__":
- # Demonstrate purchase_item function
- print("Test with default quantity_to_purchase:")
- print(purchase_item(50, 100)) # defaults to 1 item
- print("\nTest attempting to purchase more than can be afforded:")
- print(purchase_item(30, 50, 3)) # purchases 1 item
- print("\nTest with specific quantity_to_purchase:")
- print(purchase_item(10, 30, 2)) # purchases 2 items
+# Demonstration of purchase_item()
+print("Demonstrating purchase_item():")
+num_purchased, leftover_money = purchase_item(123, 1000, 3)
+print(f"Purchased: {num_purchased}, Remaining Money: {leftover_money}")
 
- # use new_random_monster function
- print("\nNew random monsters:")
- print(new_random_monster()) # Ex 1
- print(new_random_monster()) # Ex 2
- print(new_random_monster()) # Ex 3
+num_purchased, leftover_money = purchase_item(123, 201, 3)
+print(f"Purchased: {num_purchased}, Remaining Money: {leftover_money}")
+
+num_purchased, leftover_money = purchase_item(341, 2112)
+print(f"Purchased: {num_purchased}, Remaining Money: {leftover_money}")
+
+# Demonstration of new_random_monster
+print("\nDemonstrating new_random_monster():")
+for _ in range(3):
+    monster = new_random_monster()
+    print(f"Name: {monster['name']}")
+    print(f"Description: {monster['description']}")
+    print(f"Health: {monster['health']}, Power: {monster['power']}, Money: {monster['money']}\n")
