@@ -6,6 +6,46 @@
 
 import random
 
+
+def print_welcome(name, width):
+    """
+    Prints a centered welcome message for the given name.
+
+    Parameters:
+    name (str): The name to include in the welcome message.
+    width (int): The total width of the output field.
+
+    Returns:
+    None
+    """
+    message = f"Hello, {name}!"
+    print(f"'{message.center(width)}'")
+
+
+def print_shop_menu(item1Name, item1Price, item2Name, item2Price):
+    """
+    Prints a formatted shop menu with two items and their prices.
+
+    Parameters:
+    item1Name (str): Name of the first item.
+    item1Price (float): Price of the first item.
+    item2Name (str): Name of the second item.
+    item2Price (float): Price of the second item.
+
+    Returns:
+    None
+    """
+    border = "/" + "-" * 22 + "\\"
+    item1_line = "| {name:<12}{price:>8} |".format(name=item1Name, price=f"${item1Price:.2f}")
+    item2_line = "| {name:<12}{price:>8} |".format(name=item2Name, price=f"${item2Price:.2f}")
+    footer = "\\" + "-" * 22 + "/"
+
+    print(border)
+    print(item1_line)
+    print(item2_line)
+    print(footer)
+
+
 def purchase_item(itemPrice, startingMoney, quantityToPurchase=1):
     max_affordable = startingMoney // itemPrice
     quantity_purchased = min(quantityToPurchase, max_affordable)
@@ -46,6 +86,8 @@ def new_random_monster():
         "money": random.randint(*monster["money_range"])
     }
 
+
+
 # Demonstration of purchase_item()
 print("Demonstrating purchase_item():")
 num_purchased, leftover_money = purchase_item(123, 1000, 3)
@@ -64,3 +106,16 @@ for _ in range(3):
     print(f"Name: {monster['name']}")
     print(f"Description: {monster['description']}")
     print(f"Health: {monster['health']}, Power: {monster['power']}, Money: {monster['money']}\n")
+
+
+# Demonstration of print_welcome()
+print("\nDemonstrating print_welcome():")
+print_welcome("Jeff", 20)
+print_welcome("Audrey", 30)
+print_welcome("Bryannn", 25)
+
+# Demonstration of print_shop_menu()
+print("\nDemonstrating print_shop_menu():")
+print_shop_menu("Apple", 31, "Pear", 1.234)
+print_shop_menu("Egg", 0.23, "Bag of Oats", 12.34)
+print_shop_menu("Sword", 99.99, "Shield", 75.5)
