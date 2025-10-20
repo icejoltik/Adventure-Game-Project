@@ -47,12 +47,41 @@ def print_shop_menu(item1Name, item1Price, item2Name, item2Price):
 
 
 def purchase_item(itemPrice, startingMoney, quantityToPurchase=1):
+    """
+    Calculates how many items can be purchased given a starting amount of money,
+    and returns both the quantity purchased and the remaining money.
+
+    Parameters:
+        itemPrice (int): The cost of a single item.
+        startingMoney (int): The total amount of money available.
+        quantityToPurchase (int, optional): Desired quantity to buy. Defaults to 1 item.
+
+    Returns:
+        tuple: A pair (quantity_purchased, money_remaining), where:
+            - quantity_purchased (int): The number of items successfully bought.
+            - money_remaining (int): The amount of money left after the purchase.
+    """	
     max_affordable = startingMoney // itemPrice
     quantity_purchased = min(quantityToPurchase, max_affordable)
     money_remaining = startingMoney - (itemPrice * quantity_purchased)
     return quantity_purchased, money_remaining
 
 def new_random_monster():
+    """
+    Generates a random monster with attributes/characteristics drawn from the predefined monster types.
+
+    Each monster has:
+        - A name and description
+        - Randomized health, power, and money values based on specific ranges based on type
+
+    Returns:
+        dict: A dictionary containing the monster's attributes:
+            - 'name' (str): Monster type name
+            - 'description' (str): Flavor describing the encounter
+            - 'health' (int): Random health value within the monster's range
+            - 'power' (int): Random power value within the monster's range
+            - 'money' (int): Random money value within the monster's range
+    """
     monster_types = [
         {
             "name": "Goblin",
