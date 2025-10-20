@@ -1,6 +1,6 @@
 # gamefunctions.py
 # Bryan Strozyk
-# 9/28/2025
+# 10/20/25
 
 
 
@@ -147,4 +147,5 @@ print_welcome("Bryannn", 25)
 print("\nDemonstrating print_shop_menu():")
 print_shop_menu("Apple", 31, "Pear", 1.234)
 print_shop_menu("Egg", 0.23, "Bag of Oats", 12.34)
+
 print_shop_menu("Sword", 99.99, "Shield", 75.5)
