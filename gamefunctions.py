@@ -2,7 +2,6 @@
 # Bryan Strozyk
 # 11/19/25
 
-
 import random
 
 def print_welcome(name: str, width: int) -> None:
@@ -67,17 +66,8 @@ def new_random_monster() -> dict[str, str | int]:
     """
     Generates a random monster with attributes drawn from predefined monster types.
 
-    Each monster has:
-        - A name and description
-        - Randomized health, power, and money values based on specific ranges
-
     Returns:
-        dict[str, str | int]: A dictionary containing the monster's attributes:
-            - 'name' (str): Monster type name
-            - 'description' (str): Flavor text describing the encounter
-            - 'health' (int): Random health value within the monster's range
-            - 'power' (int): Random power value within the monster's range
-            - 'money' (int): Random money value within the monster's range
+        dict[str, str | int]: A dictionary containing the monster's attributes.
     """
     monster_types = [
         {
@@ -113,20 +103,82 @@ def new_random_monster() -> dict[str, str | int]:
     }
 
 
-def sleep(hp: int, gold: int) -> tuple[int, int]:
-    """
-    Restores player HP in exchange for gold.
+# --- Inventory and Items ---
 
-    The player spends 5 gold to restore 10 HP. If the player does not
-    have enough gold, no HP is restored.
+def create_sword() -> dict[str, str | int]:
+    """Creates a sword item with durability and damage bonus."""
+    return {
+        "name": "Sword",
+        "type": "weapon",
+        "maxDurability": 10,
+        "currentDurability": 10,
+        "damageBonus": 5
+    }
+
+
+def create_magic_charm() -> dict[str, str]:
+    """Creates a magic charm item that defeats a monster instantly."""
+    return {
+        "name": "Charm of Escape",
+        "type": "consumable",
+        "effect": "Defeat monster instantly"
+    }
+
+
+def purchase_item_from_shop(item: dict, inventory: list[dict], gold: int, price: int) -> tuple[list[dict], int]:
+    """
+    Purchases an item if the player has enough gold.
 
     Args:
-        hp (int): Current hit points of the player.
-        gold (int): Current gold of the player.
+        item (dict): The item to purchase.
+        inventory (list[dict]): Current player inventory.
+        gold (int): Current player gold.
+        price (int): Price of the item.
 
     Returns:
-        tuple[int, int]: Updated (hp, gold) after sleeping.
+        tuple[list[dict], int]: Updated inventory and gold.
     """
+    if gold >= price:
+        inventory.append(item)
+        gold -= price
+        print(f"You purchased {item['name']}!")
+    else:
+        print("Not enough gold to purchase this item.")
+    return inventory, gold
+
+
+def equip_item(inventory: list[dict], item_type: str) -> dict | None:
+    """
+    Allows the player to equip an item of a given type.
+
+    Args:
+        inventory (list[dict]): Current player inventory.
+        item_type (str): Type of item to equip (e.g., 'weapon').
+
+    Returns:
+        dict | None: The equipped item, or None if none chosen.
+    """
+    options = [item for item in inventory if item["type"] == item_type]
+    if not options:
+        print(f"No {item_type} items available to equip.")
+        return None
+
+    print(f"Available {item_type}s:")
+    for i, item in enumerate(options, start=1):
+        print(f"{i}) {item['name']}")
+
+    choice = input("Choose an item to equip (or press Enter to cancel): ").strip()
+    if choice.isdigit():
+        idx = int(choice) - 1
+        if 0 <= idx < len(options):
+            print(f"You equipped {options[idx]['name']}!")
+            return options[idx]
+    print("No item equipped.")
+    return None
+
+
+def sleep(hp: int, gold: int) -> tuple[int, int]:
+    """Restores player HP in exchange for gold."""
     if gold >= 5:
         hp += 10
         gold -= 5
@@ -136,17 +188,15 @@ def sleep(hp: int, gold: int) -> tuple[int, int]:
     return hp, gold
 
 
-def fight_monster(hp: int, gold: int) -> tuple[int, int]:
+def fight_monster(hp: int, gold: int, inventory: list[dict], equipped_weapon: dict | None) -> tuple[int, int]:
     """
     Handles a combat encounter between the player and a random monster.
-
-    A monster is generated using new_random_monster(). The player can
-    choose to attack or run away. Combat continues until either the
-    monster or the player reaches 0 HP, or the player runs away.
 
     Args:
         hp (int): Current hit points of the player.
         gold (int): Current gold of the player.
+        inventory (list[dict]): Player's inventory.
+        equipped_weapon (dict | None): Currently equipped weapon.
 
     Returns:
         tuple[int, int]: Updated (hp, gold) after the combat encounter.
@@ -156,6 +206,14 @@ def fight_monster(hp: int, gold: int) -> tuple[int, int]:
     print(f"\nA wild {monster['name']} appears!")
     print(monster["description"])
 
+    # Check for charm
+    for item in inventory:
+        if item["type"] == "consumable" and item["name"] == "Charm of Escape":
+            print("Your Charm of Escape activates! The monster is defeated instantly.")
+            inventory.remove(item)
+            gold += monster["money"]
+            return hp, gold
+
     while hp > 0 and monster_hp > 0:
         print(f"\nYour HP: {hp}, Monster HP: {monster_hp}")
         print("1) Attack")
@@ -163,7 +221,17 @@ def fight_monster(hp: int, gold: int) -> tuple[int, int]:
         action = input("Choose action: ").strip()
 
         if action == "1":
+            # Base damage
             player_damage = random.randint(5, 10)
+            # Weapon bonus
+            if equipped_weapon:
+                player_damage += equipped_weapon["damageBonus"]
+                equipped_weapon["currentDurability"] -= 1
+                if equipped_weapon["currentDurability"] <= 0:
+                    print(f"Your {equipped_weapon['name']} broke!")
+                    inventory.remove(equipped_weapon)
+                    equipped_weapon = None
+
             monster_damage = random.randint(1, monster["power"])
             monster_hp -= player_damage
             hp -= monster_damage
@@ -180,6 +248,4 @@ def fight_monster(hp: int, gold: int) -> tuple[int, int]:
     elif monster_hp <= 0:
         reward = monster["money"]
         gold += reward
-        print(f"You defeated the {monster['name']}! You gain {reward} gold.")
-
-    return hp, gold
+        print(f"You defeated the {monster['name']}! You
