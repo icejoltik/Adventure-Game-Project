@@ -6,17 +6,6 @@ CELL_SIZE = 32
 WINDOW_SIZE = GRID_SIZE * CELL_SIZE
 
 def run_map(player_pos: tuple[int, int], monster_pos: tuple[int, int], town_pos: tuple[int, int]) -> tuple[str, tuple[int, int]]:
-    """
-    Runs the pygame map loop and returns action + new player position.
-
-    Args:
-        player_pos (tuple[int, int]): Starting position of the player.
-        monster_pos (tuple[int, int]): Position of the monster.
-        town_pos (tuple[int, int]): Position of the town.
-
-    Returns:
-        tuple[str, tuple[int, int]]: Action ("town", "monster", "continue", "quit") and new player position.
-    """
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Adventure Map")
@@ -46,24 +35,17 @@ def run_map(player_pos: tuple[int, int], monster_pos: tuple[int, int], town_pos:
 
         screen.fill((0, 0, 0))
 
-        # Draw grid
         for x in range(0, WINDOW_SIZE, CELL_SIZE):
             for y in range(0, WINDOW_SIZE, CELL_SIZE):
                 pygame.draw.rect(screen, (50, 50, 50), (x, y, CELL_SIZE, CELL_SIZE), 1)
 
-        # Draw town
         pygame.draw.circle(screen, (0, 255, 0), town_rect.center, CELL_SIZE // 2)
-
-        # Draw monster
         pygame.draw.circle(screen, (255, 0, 0), monster_rect.center, CELL_SIZE // 2)
-
-        # Draw player
         pygame.draw.rect(screen, (0, 0, 255), player_rect)
 
         pygame.display.flip()
         clock.tick(10)
 
-        # Check collisions
         if player_rect.colliderect(town_rect):
             action = "town"
             running = False
