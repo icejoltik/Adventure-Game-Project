@@ -12,8 +12,9 @@ Accomplishments
 - Dialogue displays in a readable, wrapped text box.
 - Integrated seamlessly with existing map and player movement.
 
-### Self-Evaluation
-- **What went well:** NPCs integrated smoothly, dialogue wrapping worked, and exception handling prevented crashes.
-- **Challenges:** Positioning dialogue text and ensuring readability. (text wasnt fully showing dialogue) 
-- **How I overcame them:** Implemented text wrapping and semi-transparent dialogue boxes.
-- **If I had more time:** Add branching dialogue choices and NPC rewards.
+# Self-Evaluation
+- **What went well: NPCs integrated smoothly, dialogue wrapping worked, and exception handling prevented crashes.
+- **Challenges: Positioning dialogue text and ensuring readability. (text wasnt fully showing dialogue) 
+- **How I overcame them* Implemented text wrapping and semi-transparent dialogue boxes.
+
+- **If I had more time: Add branching dialogue choices and NPC rewards.
