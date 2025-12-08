@@ -1,30 +1,32 @@
 # wanderingMonster.py
 import random
 
-GRID_SIZE = 10
+GRID_SIZE = 10  # size of the grid (10x10)
 
 class WanderingMonster:
     """
     Represents a wandering monster on the game map.
+    Stores its current location, color, stats, and gold.
     """
 
     def __init__(self, name: str, description: str, health: int, power: int,
-                 gold: int, color: str, x: int, y: int) -> None:
+                 gold: int, color: tuple[int, int, int], x: int, y: int) -> None:
         self.name = name
         self.description = description
         self.health = health
         self.power = power
         self.gold = gold
-        self.color = color
+        self.color = color  # RGB tuple for drawing
         self.x = x
         self.y = y
 
     def move(self, direction: str, town_square: tuple[int, int]) -> None:
         """
-        Attempts to move the monster in a given direction, staying within bounds
-        and avoiding the town square.
+        Attempts to move the monster in a given direction.
+        Ensures it stays within the grid and avoids the town square.
         """
         new_x, new_y = self.x, self.y
+
         if direction == "up" and self.y > 0:
             new_y -= 1
         elif direction == "down" and self.y < GRID_SIZE - 1:
@@ -40,7 +42,7 @@ class WanderingMonster:
     @classmethod
     def create_random_monster(cls, town_square: tuple[int, int]) -> "WanderingMonster":
         """
-        Creates a random monster with attributes and a random location.
+        Creates a random monster with randomized stats and a random location.
         """
         monster_types = [
             {
@@ -49,7 +51,7 @@ class WanderingMonster:
                 "health_range": (20, 40),
                 "power_range": (5, 10),
                 "gold_range": (10, 50),
-                "color": "red"
+                "color": (255, 0, 0)  # Red
             },
             {
                 "name": "Slime",
@@ -57,7 +59,7 @@ class WanderingMonster:
                 "health_range": (10, 20),
                 "power_range": (2, 6),
                 "gold_range": (5, 20),
-                "color": "green"
+                "color": (0, 255, 0)  # Green
             },
             {
                 "name": "Specter",
@@ -65,7 +67,7 @@ class WanderingMonster:
                 "health_range": (15, 30),
                 "power_range": (4, 8),
                 "gold_range": (20, 60),
-                "color": "blue"
+                "color": (0, 0, 255)  # Blue
             }
         ]
 
@@ -74,7 +76,6 @@ class WanderingMonster:
         power = random.randint(*monster["power_range"])
         gold = random.randint(*monster["gold_range"])
 
-        # Random location not equal to town square
         while True:
             x = random.randint(0, GRID_SIZE - 1)
             y = random.randint(0, GRID_SIZE - 1)

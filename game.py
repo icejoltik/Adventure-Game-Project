@@ -8,26 +8,18 @@ def main() -> None:
     filename = "savefile.json"
     town_square = (5, 5)
 
-    # Load or start new game
-    load_choice = input("Load saved game? (y/n): ").strip().lower()
-    if load_choice == "y":
-        inventory, gold, equipped_weapon, player_pos, monster_pos = gamefunctions.load_game(filename)
-        monsters = [WanderingMonster("LoadedMonster", "A saved monster.", 20, 5, 50, "red", *monster_pos)]
-    else:
-        inventory = []
-        gold = 200
-        equipped_weapon = None
-        player_pos = (0, 0)
-        monsters = [
-            WanderingMonster.create_random_monster(town_square),
-            WanderingMonster.create_random_monster(town_square)
-        ]
+    inventory = []
+    gold = 200
+    equipped_weapon = None
+    player_pos = (0, 0)
+    monsters = [
+        WanderingMonster.create_random_monster(town_square),
+        WanderingMonster.create_random_monster(town_square)
+    ]
 
     hp = 30
     name = input("Enter your name, brave adventurer: ")
     gamefunctions.print_welcome(name, 40)
-
-    move_counter = 0
 
     while True:
         print("\nYou are in town.")
@@ -42,9 +34,7 @@ def main() -> None:
         choice = input("Enter choice: ").strip()
 
         if choice == "1":
-            # Use first monster for map display
-            monster_pos = (monsters[0].x, monsters[0].y) if monsters else (3, 3)
-            action, player_pos = run_map(player_pos, monster_pos, town_square)
+            action, player_pos = run_map(player_pos, monsters, town_square)
 
             if action == "town":
                 continue
@@ -59,13 +49,6 @@ def main() -> None:
                             return
                         monsters.remove(monster)
 
-            # Move monsters every other turn
-            move_counter += 1
-            if move_counter % 2 == 0:
-                for monster in monsters:
-                    monster.move(random.choice(["up", "down", "left", "right"]), town_square)
-
-            # Respawn if all defeated
             if not monsters:
                 monsters = [
                     WanderingMonster.create_random_monster(town_square),
