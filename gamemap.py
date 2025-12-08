@@ -108,7 +108,7 @@ def run_map(player_pos: tuple[int, int], monsters: list[WanderingMonster], town_
 
         screen.fill((0, 0, 0))
 
-        # ✅ Lighter grid lines
+        # Lighter grid lines
         for x in range(0, WINDOW_SIZE, CELL_SIZE):
             for y in range(0, WINDOW_SIZE, CELL_SIZE):
                 pygame.draw.rect(screen, (180, 180, 180), (x, y, CELL_SIZE, CELL_SIZE), 1)
@@ -148,3 +148,4 @@ def run_map(player_pos: tuple[int, int], monsters: list[WanderingMonster], town_
     pygame.quit()
     new_pos = (player_rect.x // CELL_SIZE, player_rect.y // CELL_SIZE)
     return action, new_pos
+
