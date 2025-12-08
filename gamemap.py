@@ -2,10 +2,24 @@
 import pygame
 from wanderingMonster import WanderingMonster
 import random
+import os
 
 GRID_SIZE = 10
 CELL_SIZE = 32
 WINDOW_SIZE = GRID_SIZE * CELL_SIZE
+
+def load_image(path: str, fallback_color: tuple[int, int, int], size: tuple[int, int]) -> pygame.Surface:
+    """
+    Attempts to load an image. If not found, returns a colored rectangle fallback.
+    """
+    try:
+        image = pygame.image.load(path)
+        image = pygame.transform.scale(image, size)
+        return image
+    except (pygame.error, FileNotFoundError):
+        surface = pygame.Surface(size)
+        surface.fill(fallback_color)
+        return surface
 
 def run_map(player_pos: tuple[int, int], monsters: list[WanderingMonster], town_pos: tuple[int, int]) -> tuple[str, tuple[int, int]]:
     """
@@ -14,6 +28,11 @@ def run_map(player_pos: tuple[int, int], monsters: list[WanderingMonster], town_
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Adventure Map")
+
+    # Load images with fallbacks
+    player_image = load_image("images/player.png", (0, 0, 0), (CELL_SIZE, CELL_SIZE))
+    town_image   = load_image("images/town.png", (0, 255, 0), (CELL_SIZE, CELL_SIZE))
+    monster_image = load_image("images/monster.png", (255, 0, 0), (CELL_SIZE, CELL_SIZE))
 
     player_rect = pygame.Rect(player_pos[0] * CELL_SIZE, player_pos[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
     town_rect = pygame.Rect(town_pos[0] * CELL_SIZE, town_pos[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
@@ -52,21 +71,21 @@ def run_map(player_pos: tuple[int, int], monsters: list[WanderingMonster], town_
 
         screen.fill((0, 0, 0))
 
-        # Draw grid
+        # ✅ Draw grid with lighter gray lines
         for x in range(0, WINDOW_SIZE, CELL_SIZE):
             for y in range(0, WINDOW_SIZE, CELL_SIZE):
-                pygame.draw.rect(screen, (50, 50, 50), (x, y, CELL_SIZE, CELL_SIZE), 1)
+                pygame.draw.rect(screen, (180, 180, 180), (x, y, CELL_SIZE, CELL_SIZE), 1)
 
         # Draw town
-        pygame.draw.circle(screen, (0, 255, 0), town_rect.center, CELL_SIZE // 2)
+        screen.blit(town_image, town_rect.topleft)
 
         # Draw monsters
         for monster in monsters:
             monster_rect = pygame.Rect(monster.x * CELL_SIZE, monster.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-            pygame.draw.circle(screen, monster.color, monster_rect.center, CELL_SIZE // 2)
+            screen.blit(monster_image, monster_rect.topleft)
 
         # Draw player
-        pygame.draw.rect(screen, (0, 0, 255), player_rect)
+        screen.blit(player_image, player_rect.topleft)
 
         pygame.display.flip()
         clock.tick(10)
